@@ -1,9 +1,9 @@
-#include <iostream>
+#include<iostream>
 using namespace std;
 void bubble_sort(int a[],int n){
-    for(int i=n-1;i>=0;i--){
+    for(int i=0;i<n;i++){
         int didswap = 0;
-        for(int j=0;j<=i-1;j++){
+        for(int j=0;j<n-i;j++){
             if(a[j]>a[j+1]){
                 int temp = a[j];
                 a[j] = a[j+1];
@@ -15,25 +15,9 @@ void bubble_sort(int a[],int n){
     }
     return;
 }
-void binary_search(int a[],int size,int x){
-    int start = 0;
-    int end = size-1;
-    int mid = start + (end-start)/2;
-    while(start<=end){
-        if(a[mid] == x){
-            cout<<"element is at index "<< mid ;
-        }
-        else if(a[mid]<x){
-            start = mid+1;
-        }
-        else{
-            end = mid-1;
-        }
-    }
-}
-int main() {
+int main(){
     int n;
-    cout<<"enter size of array ";
+    cout<<"enter the size of array ";
     cin>>n;
     int a[n];
     for(int i=0;i<n;i++){
@@ -41,7 +25,7 @@ int main() {
         cin>>a[i];
     }
     bubble_sort(a,n);
-    binary_search(a,n,3);
+    cout<<"after bubble sort of an array "<<endl;
     for(int i=0;i<n;i++){
         cout<<a[i]<<" ";
     }
