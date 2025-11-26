@@ -1,154 +1,147 @@
-#include <iostream>
+#include<iostream>
+#include<queue>
 using namespace std;
-
-class Node {
-public:
-    int data;
-    Node* left;
-    Node* right;
-
-     Node(int data,Node* left=nullptr,Node* right=nullptr) {
-        this->data = data;
-        this->left = left;
-        this->right = right;
-    }
+class node{
+  public:
+  int data;
+  node* left;
+  node* right;
+  node(int data,node* left=nullptr,node* right=nullptr){
+      this->data=data;
+      this->left=left;
+      this->right=right;
+  }
 };
-
-Node* insertBST(Node* root, int val) {
-    if (root == nullptr)
-        return new Node(val);
-
-    if (val < root->data)
-        root->left = insertBST(root->left, val);
-    else
-        root->right = insertBST(root->right, val);
-
+node* insertIntoBST(node* root,int d){
+    // base case
+    if(root==nullptr){
+        return new node(d);
+    }
+    if(d>root->data){
+        root->right=insertIntoBST(root->right,d);
+    }
+    else{
+        root->left=insertIntoBST(root->left,d);
+    }
     return root;
 }
-
-Node* searchRecursive(Node* root, int key) {
-    if (root == nullptr || root->data == key)
-        return root;
-
-    if (key < root->data)
-        return searchRecursive(root->left, key);
-    else
-        return searchRecursive(root->right, key);
-}
-
-Node* searchNonRecursive(Node* root, int key) {
-    while (root != nullptr) {
-        if (root->data == key)
-            return root;
-        else if (key < root->data)
-            root = root->left;
-        else
-            root = root->right;
+node* TakeInput(node* root){
+    int data;
+    cin >> data;
+    while(data != -1){
+        root = insertIntoBST(root,data);
+        cin>>data;
     }
-    return nullptr;
-}
-
-Node* findMin(Node* root) {
-    if (!root) return nullptr;
-    while (root->left != nullptr)
-        root = root->left;
     return root;
 }
-
-Node* findMax(Node* root) {
-    if (!root) return nullptr;
-    while (root->right != nullptr)
-        root = root->right;
-    return root;
+bool search_element_recursion(node* root,int val){
+    if(root==nullptr) return false;
+    if(root->data==val) return true;
+    if(root->data<val) return search_element_recursion(root->right,val);
+    else return search_element_recursion(root->left,val);
 }
-
-Node* inorderSuccessor(Node* root, Node* target) {
-    if (!target) return nullptr;
-
-    if (target->right)
-        return findMin(target->right);
-
-    Node* successor = nullptr;
-    while (root) {
-        if (target->data < root->data) {
-            successor = root;
-            root = root->left;
+bool search_el_nonRecursion(node* root){
+    int el;
+    cout<<"enter element to search in BST ";
+    cin>>el;
+    node* temp = root;
+    while(temp!=nullptr){
+        if(temp->data==el){
+            return true;
         }
-        else if (target->data > root->data) {
-            root = root->right;
+        if(temp->data<el){
+            temp = temp->right;
         }
-        else break;
+        else temp = temp->right;
     }
-    return successor;
+    return false;
 }
-
-Node* inorderPredecessor(Node* root, Node* target) {
-    if (!target) return nullptr;
-
-    if (target->left)
-        return findMax(target->left);
-
-    Node* predecessor = nullptr;
-    while (root) {
-        if (target->data > root->data) {
-            predecessor = root;
-            root = root->right;
-        }
-        else if (target->data < root->data) {
-            root = root->left;
-        }
-        else break;
+int MINval(node* root){
+    node* temp = root;
+    while(temp->left!=nullptr){
+        temp=temp->left;
     }
-    return predecessor;
+    return temp->data;
 }
-
-int main() {
-    Node* root = nullptr;
-    int n, val;
-
-    cout << "Enter number of nodes to insert: ";
-    cin >> n;
-
-    cout << "Enter " << n << " values:\n";
-    for (int i = 0; i < n; i++) {
-        cin >> val;
-        root = insertBST(root, val);
+int MAXval(node* root){
+    node* temp = root;
+    while(temp->right!=nullptr){
+        temp = temp->right;
     }
-
-    int key;
-    cout << "\nEnter key to search: ";
-    cin >> key;
-
-    Node* rec = searchRecursive(root, key);
-    Node* nonrec = searchNonRecursive(root, key);
-
-    cout << "\nRecursive Search: ";
-    if (rec) cout << "Found\n";
-    else cout << "Not Found\n";
-
-    cout << "Non-Recursive Search: ";
-    if (nonrec) cout << "Found\n";
-    else cout << "Not Found\n";
-
-    Node* mn = findMin(root);
-    if (mn) cout << "\nMinimum element: " << mn->data << endl;
-
-    Node* mx = findMax(root);
-    if (mx) cout << "Maximum element: " << mx->data << endl;
-
-    if (rec) {
-        Node* suc = inorderSuccessor(root, rec);
-        cout << "Inorder Successor of " << key << ": ";
-        if (suc) cout << suc->data << endl;
-        else cout << "None\n";
+    return temp->data;
+}
+void inorder_successor(node* root){
+    int k;
+    cout<<"enter node to find inorder successor of ";
+    cin>>k;
+    node* temp=root;
+    bool flag=false;
+    while(temp!=nullptr){
+        if(temp->data==k){
+            flag=true;
+            break;
+        }
+        if(temp->data<k){
+            temp=temp->right;
+        }
+        else temp=temp->left;
     }
-
-    if (rec) {
-        Node* pre = inorderPredecessor(root, rec);
-        cout << "Inorder Predecessor of " << key << ": ";
-        if (pre) cout << pre->data << endl;
-        else cout << "None\n";
+    if(flag==false){
+        cout<<"given node is not present is BST "<<endl;
+        return;
     }
-
+    if(temp->right!=nullptr){
+        cout<<"inorder successor of node "<<k<<"  is "<<temp->right->data<<endl;
+    }
+    else{
+        cout<<"given node is maximum node so that no successor "<<endl;
+    }
+}
+void inorder_predecessor(node* root){
+    int k;
+    cout<<"enter node to find inorder predecessor of ";
+    cin>>k;
+    node* curr = root;
+    node* temp=curr;
+    bool flag=false;
+    while(curr!=nullptr){
+        if(curr->data==k){
+            flag=true;
+            break;
+        }
+        if(curr->data<k){
+            temp=curr;
+            curr=curr->right;
+        }
+        else{
+            temp=curr;
+            curr=curr->left;
+        }
+    }
+    if(flag==true){
+        cout<<"inorder predecessor of node "<<k<<" is "<<temp->data<<endl;
+    }
+    else{
+        cout<<"Invalid input node "<<endl;
+    }
+}
+int main(){
+    node* root = nullptr;
+    cout<<"enter data to create BST "<<endl;
+    root = TakeInput(root);
+    int k;
+    cout<<"enter element for searching in bst ";
+    cin>>k;
+    int ans1 = search_element_recursion(root,k);
+    if(ans1==1) cout<<"True"<<endl;
+    else cout<<"False";
+    int ans2 = search_el_nonRecursion(root);
+    if(ans2==1) cout<<"True"<<endl;
+    else  cout<<"False"<<endl;
+    cout<<"Minimum value of BST is "<<MINval(root)<<endl;
+    cout<<"Maximum value of BST is "<<MAXval(root)<<endl;
+    inorder_successor(root);
+    inorder_predecessor(root);
+    delete[] root;
     return 0;
 }
